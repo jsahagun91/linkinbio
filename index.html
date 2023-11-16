@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jose sahagun</title>
+    <style>
+        .draggable {
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            margin: 0 10px; /* Adds some space between the icons */
+            padding: 0px;
+            position: absolute;
+            cursor: move;
+        }
+        .draggable.dragging {
+    border: 2px dotted #000; /* Example: black dotted border */
+    border-radius: 25px;
+}
+    img, a {
+        align-items: center;
+        flex-direction: column;
+        margin: auto;
+        display: flex;
+    }
+
+    a {
+        color: black;
+        cursor: url('https://fav.farm/🚀') 10 10, auto;
+        text-decoration: none;
+    }
+
+    img {
+        height: 100px;
+        width: auto;
+    }
+
+    @media screen and (max-width: 768px) {
+
+        .draggable {
+            align-items: center;
+            width: 75px;
+            height: 75px;
+            margin: 0 10px; /* Adds some space between the icons */
+            padding: 0px;
+            position: absolute;
+            cursor: move;
+        }
+        img, a {
+        align-items: center;
+        flex-direction: column;
+        margin: auto;
+        display: flex;
+        }
+
+        img {
+        height: 75px;
+        width: auto;
+        }
+    }
+
+        .header {
+            margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+        }
+
+        h1 {
+            font-weight: 400;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>jose sahagun</h1>
+</div>
+
+<div class="draggable" style="top: 50%; left: 53.9964%;">
+<a href="https://pailabs.io" class="x" id="icon1" >
+    <img src="assets/images/directory.png" alt="Icon 1">
+    pai
+</a>
+</div>
+
+<div class="draggable" style="right: 34.9844px; top: 200px">
+<a href="https://github.com/jsahagun91" class="x" id="icon2" > 
+    <img src="assets/images/github.png" alt="Icon 2">
+    github
+</a>
+</div>
+
+<div class="draggable" style="right: 30%; top: 80%">
+    <a href="https://www.linkedin.com/in/josesahagun01/" class="x" id="icon3" > 
+        <img src="assets/images/linkedin.png" alt="Icon 2">
+        linkedin
+    </a>
+    </div>
+
+    <div class="draggable" style="right: 50%; top: 40%">
+        <a href="https://filesonline.s3.us-east-2.amazonaws.com/jsResume.docx.pdf" class="x" id="icon4" > 
+            <img src="assets/images/resume.png" alt="Icon 2">
+            resume
+        </a>
+        </div>
+
+<script>
+
+    let lastDraggedElement = null;
+
+    document.querySelectorAll('.draggable').forEach(icon => {
+    makeDraggable(icon);
+});
+
+function makeDraggable(element) {
+    let initialX = 0, initialY = 0, xOffset = 0, yOffset = 0;
+    let active = false;
+    let dragged = false;
+
+    // Desktop Events
+    element.addEventListener('mousedown', dragStart, false);
+    document.addEventListener('mouseup', dragEnd, false);
+    document.addEventListener('mousemove', dragMove, false);
+
+    // Mobile Events
+    element.addEventListener('touchstart', dragStart, false);
+    document.addEventListener('touchend', dragEnd, false);
+    document.addEventListener('touchmove', dragMove, false);
+
+    // Click Event to prevent link navigation on drag
+    element.addEventListener('click', (e) => {
+        if (dragged) {
+            e.preventDefault();
+        }
+        dragged = false; // Reset the dragged state
+    });
+
+    function dragStart(e) {
+
+        if (lastDraggedElement) {
+            lastDraggedElement.classList.remove("dragging");
+        }
+        element.classList.add("dragging");
+        lastDraggedElement = element;
+
+        if (e.type === 'touchstart') {
+            initialX = e.touches[0].clientX - xOffset;
+            initialY = e.touches[0].clientY - yOffset;
+        } else {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+        active = true;
+        dragged = false; // Reset the dragged state
+
+        element.classList.add("dragging"); // Add class when dragging starts
+
+        // Set initial offsets based on current element position
+        const rect = element.getBoundingClientRect();
+        xOffset = rect.left;
+        yOffset = rect.top;
+
+        if (e.type === 'touchstart') {
+            initialX = e.touches[0].clientX;
+            initialY = e.touches[0].clientY;
+        } else {
+            initialX = e.clientX;
+            initialY = e.clientY;
+        }
+
+        active = true;
+        dragged = false;
+    }
+
+    function dragMove(e) {
+        if (active) {
+            e.preventDefault();
+
+            let currentX, currentY;
+
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            }
+
+            const dx = currentX - initialX;
+            const dy = currentY - initialY;
+
+            const newLeft = xOffset + dx;
+            const newTop = yOffset + dy;
+
+            const minX = 0;
+            const maxX = window.innerWidth - element.offsetWidth;
+            const minY = 0;
+            const maxY = window.innerHeight - element.offsetHeight;
+
+            element.style.left = `${Math.min(Math.max(newLeft, minX), maxX)}px`;
+            element.style.top = `${Math.min(Math.max(newTop, minY), maxY)}px`;
+
+            dragged = true;
+        }
+    }
+
+    function dragEnd() {
+
+        initialX = xOffset;
+        initialY = yOffset;
+        active = false;
+
+    }
+}
+
+
+</script>
+
+</body>
+</html>
